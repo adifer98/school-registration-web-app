@@ -1,14 +1,26 @@
-import useStore from "../store/Store.ts";
+import CourseForm from "../components/CourseForm.tsx";
+import useManagementStore from "../store/ManagementStore.ts";
+import {useState} from "react";
+import Course from "../interfaces/Course.ts";
+import CourseModal from "../components/CourseModal.tsx";
 
 export default function Courses() {
-    const courses = useStore(state => state.courses);
+
+    const [courseSelected, setCourseSelected] = useState<Course | null>(null);
+    const [openForm, setOpenForm] = useState<boolean>(false);
+
+    const courses = useManagementStore(state => state.courses);
 
 
     return (
         <>
+            <CourseForm method={'ADD'} course={null} open={openForm} onClose={() => setOpenForm(false)} />
+
+            <CourseModal course={courseSelected} onClose={() => setCourseSelected(null)} />
+
             <h1>Courses Table:</h1>
             <div>
-                <button>Add Course</button>
+                <button onClick={() => setOpenForm(true)}>Add Course</button>
             </div>
             <table>
                 <tbody>
@@ -20,7 +32,7 @@ export default function Courses() {
                     <th>Description</th>
                 </tr>
                 {courses.map(course => (
-                    <tr key={course.id} onClick={() => console.log(course)}>
+                    <tr key={course.id} onClick={() => setCourseSelected(course)}>
                         <td>{course.id}</td>
                         <td>{course.title}</td>
                         <td>{course.hours}</td>
