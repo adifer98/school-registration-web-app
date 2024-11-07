@@ -42,7 +42,7 @@ export default function StudentModal(props: StudentPresenterProps) {
                 }}
             />
 
-            <Dialog open={student !== null && !openForm} onClose={closeHandler}>
+            <Dialog fullWidth open={student !== null && !openForm} onClose={closeHandler}>
                 { student && (
                     <>
                         <h2> {student.name} </h2>

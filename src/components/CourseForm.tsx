@@ -34,6 +34,9 @@ export default function CourseForm(props: CourseFormProps) {
             price: Number(formData.get("price")),
         };
 
+        if (course !== null) {
+            data.id = course.id;
+        }
 
         console.log(data);
         if (method === "ADD") {

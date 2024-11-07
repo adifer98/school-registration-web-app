@@ -3,11 +3,10 @@ import {NavLink} from "react-router-dom";
 export default function MainNavigation() {
     return (
         <header>
-            <div>
-                <NavLink to='/students'>Students</NavLink>
-                <NavLink to='/courses'>Courses</NavLink>
-                <NavLink to='/enrollments'>Enrollments</NavLink>
-            </div>
+            <NavLink className={({isActive})=> isActive ? "active" : "inactive"} to="/">Home</NavLink>
+            <NavLink className={({isActive})=> isActive ? "active" : "inactive"} to='/students'>Students</NavLink>
+            <NavLink className={({isActive})=> isActive ? "active" : "inactive"} to='/courses'>Courses</NavLink>
+            <NavLink className={({isActive})=> isActive ? "active" : "inactive"} to='/enrollments'>Enrollments</NavLink>
         </header>
     )
 }

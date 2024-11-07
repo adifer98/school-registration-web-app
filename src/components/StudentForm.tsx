@@ -35,7 +35,9 @@ export default function StudentForm(props: StudentFormProps) {
         const formData = new FormData(event.currentTarget);
         const registrationDate = value?.toDate();
         const data = {...Object.fromEntries(formData.entries()), registrationDate} as Student;
-
+        if (student !== null){
+            data.id = student.id;
+        }
         console.log(data);
         if (method === "ADD") {
             setAlertState({...addStudent(data), open: true});
@@ -50,7 +52,7 @@ export default function StudentForm(props: StudentFormProps) {
 
     return (
         <>
-            <Dialog open={open} onClose={onClose}>
+            <Dialog fullWidth open={open} onClose={onClose}>
                 <form onSubmit={submitHandler}>
                     <p>
                         <TextField

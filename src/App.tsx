@@ -1,9 +1,10 @@
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import Students from "./pages/Students.tsx";
+import Students, {studentsLoader} from "./pages/Students.tsx";
 import Courses from "./pages/Courses.tsx";
 import Enrollments from "./pages/Enrollments.tsx";
 import Home from "./pages/Home.tsx";
 import Root from "./pages/Root.tsx";
+import './App.scss';
 
 const router = createBrowserRouter([{
     path: '/',
@@ -16,6 +17,7 @@ const router = createBrowserRouter([{
         {
             path: 'students',
             element: <Students/>,
+            loader: studentsLoader
         },
         {
             path: 'courses',
