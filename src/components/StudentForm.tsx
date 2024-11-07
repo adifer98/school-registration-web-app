@@ -21,7 +21,7 @@ interface StudentFormProps {
 
 export default function StudentForm(props: StudentFormProps) {
 
-    const [value, setValue] = useState<Dayjs>(dayjs(format(props.student?.registrationDate || new Date(), 'yyyy-MM-dd')));
+    const [value, setValue] = useState<Dayjs>(dayjs(format(props.student ? props.student.registrationDate : new Date(), 'yyyy-MM-dd')));
     const setAlertState = useAlertState(state => state.setAlertState);
 
     const addStudent = useManagementStore(state => state.addStudent);

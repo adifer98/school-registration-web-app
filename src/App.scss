@@ -15,14 +15,44 @@ html {
   margin: 3rem;
 }
 
+.home {
+  margin: 2rem;
 
-header {
-  display: flex;
-  justify-content: space-between;
-  height: 10vh;
-  width: 50vw;
-  font-size: 1.5rem;
+  header {
+    display: flex;
+    justify-content: space-between;
+    height: 10vh;
+    font-size: 1.5rem;
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+    }
+  }
+
+  .container {
+    text-align: center;
+    padding: 2rem;
+    //color: white;
+    h1 {
+      font-size: 4rem;
+    }
+    p {
+      padding: 5rem;
+      font-size: 1.2rem;
+    }
+  }
+
 }
+
+
+//header {
+//  display: flex;
+//  justify-content: space-between;
+//  height: 10vh;
+//  width: 50vw;
+//  font-size: 1.5rem;
+//}
 
 .inactive {
   text-decoration: none;
