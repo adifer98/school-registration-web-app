@@ -36,7 +36,7 @@ export default function EnrollmentModal(props: EnrollmentPresenterProps) {
                         <h2> {enrollment.id}</h2>
 
                         <div>
-                            <p>{enrollment.studentId}</p>
+                            <p>{enrollment.userId}</p>
                             <p>{enrollment.courseId}</p>
                             <p>{enrollment.createdDate.toLocaleDateString()}</p>
                         </div>

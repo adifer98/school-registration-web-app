@@ -24,7 +24,6 @@ export default function Courses() {
 
             <CourseModal course={courseSelected} onClose={() => setCourseSelected(null)}/>
             <div className="list-container">
-                <h1>Courses Table:</h1>
 
                 <div className="search-wrapper">
                     <SearchIcon className="search-icon"/>
@@ -36,6 +35,8 @@ export default function Courses() {
                 </div>
 
                 <Button variant="contained" onClick={() => setOpenForm(true)}>Add Course</Button>
+
+                <h1>Courses Table:</h1>
 
                 <List sx={{width: '100%', maxWidth: 360}}>
                     {filterCourses.map(course => (

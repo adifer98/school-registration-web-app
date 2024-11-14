@@ -1,26 +1,26 @@
-import Student from "../interfaces/Student.ts";
+import User from "../interfaces/User.ts";
 import {Dialog} from "@mui/material";
-import StudentForm from "./StudentForm.tsx";
+import UserForm from "./UserForm.tsx";
 import {useState} from "react";
 import useManagementStore from "../store/ManagementStore.ts";
 
 
-interface StudentPresenterProps {
-    student: Student | null;
+interface UserModalProps {
+    user: User | null;
     onClose: () => void;
 }
 
-export default function StudentModal(props: StudentPresenterProps) {
+export default function UserModal(props: UserModalProps) {
 
     const [openForm, setOpenForm] = useState<boolean>(false);
     const [onDelete, setOnDelete] = useState<boolean>(false);
 
-    const deleteStudent = useManagementStore(state => state.deleteStudent);
+    const deleteUser = useManagementStore(state => state.deleteUser);
 
-    const {student, onClose} = props;
+    const {user, onClose} = props;
 
     function deleteHandler() {
-        deleteStudent(student!.id);
+        deleteUser(user!.id);
         onClose();
         setOnDelete(false);
     }
@@ -32,9 +32,9 @@ export default function StudentModal(props: StudentPresenterProps) {
 
     return (
         <>
-            <StudentForm
+            <UserForm
                 method={'UPDATE'}
-                student={student}
+                user={user}
                 open={openForm}
                 onClose={() => {
                     setOpenForm(false);
@@ -42,16 +42,17 @@ export default function StudentModal(props: StudentPresenterProps) {
                 }}
             />
 
-            <Dialog fullWidth open={student !== null && !openForm} onClose={closeHandler}>
-                { student && (
+            <Dialog fullWidth open={user !== null && !openForm} onClose={closeHandler}>
+                { user && (
                     <>
-                        <h2> {student.name} </h2>
+                        <h2> {user.name} </h2>
 
                         <div>
-                            <p>{student.id}</p>
-                            <p>{student.email}</p>
-                            <p>{student.city}</p>
-                            <p>{student.registrationDate.toLocaleDateString()}</p>
+                            <p>{user.id}</p>
+                            <p>{user.email}</p>
+                            <p>{user.city}</p>
+                            <p>{user.role}</p>
+                            <p>{user.registrationDate.toLocaleDateString()}</p>
                         </div>
                     </>
                     )

@@ -1,18 +1,17 @@
 import {createBrowserRouter, Outlet, RouterProvider} from "react-router-dom";
-import Students, {studentsLoader} from "./pages/Students.tsx";
+import Users, {usersLoader} from "./pages/Users.tsx";
 import Courses from "./pages/Courses.tsx";
 import Enrollments from "./pages/Enrollments.tsx";
 import Home from "./pages/Home.tsx";
-// import Root from "./pages/Root.tsx";
 import './App.scss';
 import Login from "./pages/Login.tsx";
 import Signup from "./pages/Signup.tsx";
+import Root from "./pages/Root.tsx";
 
 const router = createBrowserRouter([{
     path: '/',
     element: <Outlet/>,
-    children: [
-        {
+    children: [{
             index: true,
             element: <Home/>
         },
@@ -25,17 +24,22 @@ const router = createBrowserRouter([{
             element: <Signup />
         },
         {
-            path: 'students',
-            element: <Students/>,
-            loader: studentsLoader
-        },
-        {
-            path: 'courses',
-            element: <Courses/>
-        },
-        {
-            path: 'enrollments',
-            element: <Enrollments/>
+            path: 'signed',
+            element: <Root />,
+            children: [{
+                    index: true,
+                    path: 'users',
+                    element: <Users/>,
+                    loader: usersLoader
+                },
+                {
+                    path: 'courses',
+                    element: <Courses/>
+                },
+                {
+                    path: 'enrollments',
+                    element: <Enrollments/>
+                }]
         }]
     }
 ]);

@@ -1,6 +1,6 @@
 interface Enrollment {
     id: string;
-    studentId: string;
+    userId: string;
     courseId: string;
     createdDate: Date;
 }

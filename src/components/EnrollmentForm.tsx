@@ -54,8 +54,8 @@ export default function EnrollmentForm(props: EnrollmentFormProps) {
                     </p>
                     <p>
                         <TextField
-                            name="studentId"
-                            label="Student ID"
+                            name="userId"
+                            label="User ID"
                             variant="outlined"
                             required
                         />

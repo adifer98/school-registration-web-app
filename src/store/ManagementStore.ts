@@ -1,5 +1,5 @@
 import {create} from "zustand";
-import Student from "../interfaces/Student.ts";
+import User from "../interfaces/User.ts";
 import Course from "../interfaces/Course.ts";
 import Enrollment from "../interfaces/Enrollment.ts";
 
@@ -10,10 +10,10 @@ interface resultProps {
 }
 
 interface StoreProps {
-    students: Student[];
-    addStudent: (student: Student) => resultProps;
-    updateStudent: (student: Student) => resultProps;
-    deleteStudent: (studentId: string) => resultProps;
+    users: User[];
+    addUser: (user: User) => resultProps;
+    updateUser: (user: User) => resultProps;
+    deleteUser: (userId: string) => resultProps;
     courses: Course[];
     addCourse: (course: Course) => resultProps;
     updateCourse: (course: Course) => resultProps;
@@ -25,58 +25,58 @@ interface StoreProps {
 
 
 const useManagementStore = create<StoreProps>((set) => ({
-    students: [],
-    addStudent: (student: Student) => {
+    users: [],
+    addUser: (user: User) => {
         let message : string = "";
         let succeeded : boolean = false;
         set((state: StoreProps): StoreProps => {
-            const index = state.students.findIndex((s: Student) => s.id === student.id);
+            const index = state.users.findIndex((u: User) => u.id === user.id);
             if (index >= 0) {
-                message = `There's already a student with the id ${student.id}`;
+                message = `There's already a user with the id ${user.id}`;
                 return {...state};
             }
-            if (!student.email.includes('@')) {
+            if (!user.email.includes('@')) {
                 message = 'invalid email address';
                 return {...state};
             }
-            message = 'Student added successfully!';
+            message = 'User added successfully!';
             succeeded = true;
-            return {...state, students: [...state.students, student]}
+            return {...state, users: [...state.users, student]}
         });
         return {succeeded, message};
     },
-    updateStudent: (student: Student) => {
+    updateUser: (user: User) => {
         let message : string = "";
         let succeeded : boolean = false;
         set((state: StoreProps): StoreProps => {
-            const index = state.students.findIndex((s: Student) => s.id === student.id);
+            const index = state.users.findIndex((u: User) => u.id === user.id);
             if (index < 0) {
-                message = `There's no student with the id ${student.id}`;
+                message = `There's no user with the id ${user.id}`;
                 return {...state};
             }
-            if (!student.email.includes('@')) {
+            if (!user.email.includes('@')) {
                 message = 'invalid email address';
                 return {...state};
             }
-            state.students.splice(index, 1);
-            message = 'Student updated successfully!';
+            state.users.splice(index, 1);
+            message = 'User updated successfully!';
             succeeded = true;
-            return {...state, students: [...state.students, student]};
+            return {...state, users: [...state.users, user]};
         })
         return {succeeded, message};
     },
-    deleteStudent: (studentId: string) => {
+    deleteUser: (userId: string) => {
         let message : string = "";
         let succeeded : boolean = false;
         set((state: StoreProps): StoreProps => {
-            const index = state.students.findIndex((s: Student) => s.id === studentId);
+            const index = state.users.findIndex((u: User) => u.id === userId);
             if (index < 0) {
-                message = `There's no student with the id ${studentId}`;
+                message = `There's no student with the id ${userId}`;
                 return {...state};
             }
-            state.students.splice(index, 1);
-            const updatedEnrollments = state.enrollments.filter(enrollment => enrollment.studentId !== studentId);
-            message = 'Student deleted successfully!';
+            state.users.splice(index, 1);
+            const updatedEnrollments = state.enrollments.filter(enrollment => enrollment.userId !== userId);
+            message = 'User deleted successfully!';
             succeeded = true;
 
             return {...state, enrollments: updatedEnrollments}
@@ -156,11 +156,11 @@ const useManagementStore = create<StoreProps>((set) => ({
                 message = `There's already an enrollment with the id ${enrollment.id}`;
                 return {...state}
             }
-            const studentIndex = state.students.findIndex((s: Student) => s.id === enrollment.studentId);
+            const studentIndex = state.users.findIndex((u: User) => u.id === enrollment.userId);
             const courseIndex = state.courses.findIndex((c: Course) => c.id === enrollment.courseId);
 
             if (studentIndex < 0 || courseIndex < 0) {
-                message = `There is no student with the id ${enrollment.studentId} or that there is no course with the id ${enrollment.courseId}`;
+                message = `There is no user with the id ${enrollment.userId} or that there is no course with the id ${enrollment.courseId}`;
                 return {...state}
             }
             message = 'Enrollment added successfully!';

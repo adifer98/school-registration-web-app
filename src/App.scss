@@ -45,14 +45,14 @@ html {
 
 }
 
+.navigation {
+    display: flex;
+    justify-content: center;
+    height: 10vh;
+    font-size: 1.5rem;
+    gap: 4rem;
+}
 
-//header {
-//  display: flex;
-//  justify-content: space-between;
-//  height: 10vh;
-//  width: 50vw;
-//  font-size: 1.5rem;
-//}
 
 .inactive {
   text-decoration: none;

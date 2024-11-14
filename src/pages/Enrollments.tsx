@@ -17,7 +17,7 @@ export default function Enrollments() {
 
     const filteredEnrollments = enrollments.filter(enrollment => {
         if (filteredValue === 'Student') {
-            return enrollment.studentId.startsWith(searchInput);
+            return enrollment.userId.startsWith(searchInput);
         }
         return enrollment.courseId.startsWith(searchInput);
     })

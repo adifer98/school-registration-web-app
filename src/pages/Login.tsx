@@ -1,3 +1,4 @@
+import {Button, TextField} from "@mui/material";
 import {NavLink} from "react-router-dom";
 
 export default function Login() {
@@ -10,7 +11,7 @@ export default function Login() {
             <div className="auth-form-body">
                 <form>
                     <TextField variant="outlined" label="Username" required/>
-                    <TextField variant="outlined" type="password" label="Username" required/>
+                    <TextField variant="outlined" type="password" label="Password" required/>
 
                     <Button variant="contained">Login</Button>
                 </form>
@@ -25,4 +26,3 @@ export default function Login() {
 }
 
 
-import {Button, TextField} from "@mui/material";
