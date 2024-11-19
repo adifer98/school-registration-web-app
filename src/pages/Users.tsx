@@ -1,9 +1,8 @@
-import {Suspense, useState} from "react";
+import {useEffect, useState} from "react";
 import UserForm from "../components/UserForm.tsx";
 import UserModal from "../components/UserModal.tsx";
 import useManagementStore from "../store/ManagementStore.ts";
 import {Button, CircularProgress, List, ListItem, ListItemText} from "@mui/material";
-import {Await, useLoaderData, useNavigation} from "react-router-dom";
 import SearchIcon from '@mui/icons-material/Search';
 import User from "../interfaces/User.ts";
 
@@ -12,13 +11,15 @@ export default function Users() {
     const [openForm, setOpenForm] = useState<boolean>(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [searchInput, setSearchInput] = useState("");
-
     const users = useManagementStore((state) => state.users);
 
-    const loaderData = useLoaderData();
-    const navigation = useNavigation();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    console.log(navigation.state);
+    useEffect(() => {
+        setTimeout(()=> {
+            setIsLoading(false);
+        }, 1500);
+    }, [])
 
     const filterUsers : User[] = users.filter(user =>
         user.name.toLowerCase().includes(searchInput.toLowerCase())
@@ -41,32 +42,25 @@ export default function Users() {
                 </div>
 
                 <Button variant="contained" onClick={() => setOpenForm(true)}>
-                    Add Student
+                    Add User
                 </Button>
 
-                <Suspense fallback={<CircularProgress />}>
-                    <Await resolve={loaderData}>
-                        <List sx={{ width: "100%", maxWidth: 360 }}>
-                            {filterUsers.map((user) => (
-                                <div key={user.id} className="list-item" onClick={() => setSelectedUser(user)}>
-                                    <ListItem>
-                                        <ListItemText primary={user.name} secondary={user.id} />
-                                    </ListItem>
-                                </div>
-                            ))}
-                        </List>
-                    </Await>
-                </Suspense>
+                {isLoading && <div style={{margin: "50px"}}><CircularProgress /></div>}
+
+                {!isLoading &&
+                    <List sx={{width: "100%", maxWidth: 360}}>
+                        {filterUsers.map((user) => (
+                            <div key={user.id} className="list-item" onClick={() => setSelectedUser(user)}>
+                                <ListItem>
+                                    <ListItemText primary={user.name} secondary={user.id}/>
+                                </ListItem>
+                            </div>
+                        ))}
+                    </List>
+                }
+
             </div>
         </>
     );
 }
 
-
-export async function usersLoader() {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve({ message: "Data is loaded" });
-        }, 2000);
-    });
-}

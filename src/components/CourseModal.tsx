@@ -3,6 +3,7 @@ import {Dialog} from "@mui/material";
 import {useState} from "react";
 import CourseForm from "./CourseForm.tsx";
 import useManagementStore from "../store/ManagementStore.ts";
+import useUserStateStore from "../store/UserStateStore.ts";
 
 
 interface CoursePresenterProps {
@@ -16,6 +17,7 @@ export default function CourseModal(props: CoursePresenterProps) {
     const [onDelete, setOnDelete] = useState<boolean>(false);
 
     const deleteCourse = useManagementStore(state => state.deleteCourse);
+    const state = useUserStateStore(state => state.state);
 
     const {course, onClose} = props;
 
@@ -56,14 +58,14 @@ export default function CourseModal(props: CoursePresenterProps) {
                     </>
                 }
 
-                {!onDelete &&
+                {state.userRole === "Admin" && !onDelete &&
                     <div>
                         <button onClick={() => setOpenForm(true)}>Edit</button>
                         <button onClick={() => setOnDelete(true)}>Delete</button>
                     </div>
                 }
 
-                {onDelete &&
+                {state.userRole === "Admin" && onDelete &&
                     <>
                         <h3>Are you sure?</h3>
                         <div>
@@ -71,7 +73,6 @@ export default function CourseModal(props: CoursePresenterProps) {
                             <button onClick={deleteHandler}>Yes</button>
                         </div>
                     </>
-
                 }
             </Dialog>
 

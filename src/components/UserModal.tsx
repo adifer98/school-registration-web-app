@@ -3,6 +3,7 @@ import {Dialog} from "@mui/material";
 import UserForm from "./UserForm.tsx";
 import {useState} from "react";
 import useManagementStore from "../store/ManagementStore.ts";
+import useAuthStore from "../store/AuthStore.ts";
 
 
 interface UserModalProps {
@@ -16,11 +17,13 @@ export default function UserModal(props: UserModalProps) {
     const [onDelete, setOnDelete] = useState<boolean>(false);
 
     const deleteUser = useManagementStore(state => state.deleteUser);
+    const deleteApproval = useAuthStore(state => state.deleteApproval);
 
     const {user, onClose} = props;
 
     function deleteHandler() {
         deleteUser(user!.id);
+        deleteApproval(user!.email);
         onClose();
         setOnDelete(false);
     }
@@ -33,7 +36,7 @@ export default function UserModal(props: UserModalProps) {
     return (
         <>
             <UserForm
-                method={'UPDATE'}
+                method='UPDATE'
                 user={user}
                 open={openForm}
                 onClose={() => {

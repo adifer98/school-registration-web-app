@@ -1,5 +1,5 @@
 import {createBrowserRouter, Outlet, RouterProvider} from "react-router-dom";
-import Users, {usersLoader} from "./pages/Users.tsx";
+import Users from "./pages/Users.tsx";
 import Courses from "./pages/Courses.tsx";
 import Enrollments from "./pages/Enrollments.tsx";
 import Home from "./pages/Home.tsx";
@@ -7,10 +7,15 @@ import './App.scss';
 import Login from "./pages/Login.tsx";
 import Signup from "./pages/Signup.tsx";
 import Root from "./pages/Root.tsx";
+import AlertMessage from "./components/AlertMessage.tsx";
 
 const router = createBrowserRouter([{
     path: '/',
-    element: <Outlet/>,
+    element: <>
+        <Outlet/>
+        <AlertMessage />
+    </>
+    ,
     children: [{
             index: true,
             element: <Home/>
@@ -27,10 +32,13 @@ const router = createBrowserRouter([{
             path: 'signed',
             element: <Root />,
             children: [{
-                    index: true,
+                index: true,
+                path: 'profile',
+                element: <></>
+                },
+                {
                     path: 'users',
                     element: <Users/>,
-                    loader: usersLoader
                 },
                 {
                     path: 'courses',

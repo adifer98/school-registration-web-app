@@ -1,10 +1,15 @@
 import Course from "../interfaces/Course.ts";
 import {Button, Dialog, TextField} from "@mui/material";
-import React from "react";
-import useManagementStore from "../store/ManagementStore.ts";
+import React, {useEffect, useState} from "react";
+import useManagementStore, {resultProps} from "../store/ManagementStore.ts";
 import useAlertState from "../store/AlertStateStore.ts";
 
 
+interface TextFieldsErrorProps {
+    id: resultProps;
+    hours: resultProps;
+    price: resultProps;
+}
 
 interface CourseFormProps {
     method: 'ADD' | 'UPDATE';
@@ -15,12 +20,57 @@ interface CourseFormProps {
 
 export default function CourseForm(props: CourseFormProps) {
 
-    const setAlertState = useAlertState(state => state.setAlertState);
+    const [textFieldsError, setTextFieldsError] = useState<TextFieldsErrorProps>({
+        id: {
+            succeeded: true,
+            message: ""
+        },
+        hours: {
+            succeeded: true,
+            message: ""
+        },
+        price: {
+            succeeded: true,
+            message: ""
+        }
+    })
 
+    const setAlertState = useAlertState(state => state.setAlertState);
     const addCourse = useManagementStore(state => state.addCourse);
     const updateCourse = useManagementStore(state => state.updateCourse);
+    const isCourseIdNotExists = useManagementStore(state => state.isCourseIdNotExists);
+    const isCourseHoursValid = useManagementStore(state => state.isCourseHoursValid)
+    const isCoursePriceValid = useManagementStore(state => state.isCoursePriceValid)
+
+    useEffect(() => {
+        setTextFieldsError({
+            id: {
+                succeeded: true,
+                message: ""
+            },
+            hours: {
+                succeeded: true,
+                message: ""
+            },
+            price: {
+                succeeded: true,
+                message: ""
+            }
+        })
+    }, [props.course, setTextFieldsError])
 
     const {method, course, open, onClose} = props;
+
+    function checkErrors(id: string, hours: number, price: number) {
+        const idCheckResult = isCourseIdNotExists(id);
+        const hoursCheckResult = isCourseHoursValid(hours);
+        const priceCheckResult = isCoursePriceValid(price);
+        setTextFieldsError({
+            id: idCheckResult,
+            hours: hoursCheckResult,
+            price: priceCheckResult
+        })
+    }
 
     function submitHandler(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -39,13 +89,25 @@ export default function CourseForm(props: CourseFormProps) {
         }
 
         console.log(data);
+
         if (method === "ADD") {
-            setAlertState({...addCourse(data), open: true});
+            const state = addCourse(data);
+            setAlertState({...state, open: true});
+            if (state.succeeded) {
+                onClose();
+            } else {
+                checkErrors(data.id, data.hours, data.price);
+            }
         } else {
-            setAlertState({...updateCourse(data), open: true});
+            const state = updateCourse(data);
+            setAlertState({...state, open: true});
+            if (state.succeeded) {
+                onClose();
+            } else {
+                checkErrors(data.id, data.hours, data.price);
+            }
         }
 
-        onClose();
     }
 
 
@@ -64,6 +126,8 @@ export default function CourseForm(props: CourseFormProps) {
                             defaultValue={course ? course.id : ""}
                             required
                             disabled={course !== null}
+                            error={course === null && !textFieldsError.id.succeeded}
+                            helperText={course === null ? textFieldsError.id.message : ""}
                         />
                     </p>
                     <p>
@@ -92,6 +156,8 @@ export default function CourseForm(props: CourseFormProps) {
                             variant="outlined"
                             defaultValue={course ? course.hours : null}
                             required
+                            error={!textFieldsError.hours.succeeded}
+                            helperText={textFieldsError.hours.message}
                         />
                     </p>
                     <p>
@@ -101,6 +167,8 @@ export default function CourseForm(props: CourseFormProps) {
                             variant="outlined"
                             defaultValue={course ? course.price : null}
                             required
+                            error={!textFieldsError.price.succeeded}
+                            helperText={textFieldsError.price.message}
                         />
                     </p>
 
