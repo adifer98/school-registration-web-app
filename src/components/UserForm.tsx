@@ -10,6 +10,7 @@ import useManagementStore, {resultProps} from "../store/ManagementStore.ts";
 import {format} from "date-fns";
 import useAlertState from "../store/AlertStateStore.ts";
 import useAuthStore from "../store/AuthStore.ts";
+import useUserStateStore from "../store/UserStateStore.ts";
 
 interface TextFieldsErrorProps {
     id: resultProps;
@@ -46,6 +47,7 @@ export default function UserForm(props: UserFormProps) {
     const updateUser = useManagementStore(state => state.updateUser);
     const isEmailNotExist = useAuthStore(state => state.isEmailNotExist);
     const isUserIdNotExists = useManagementStore(state => state.isUserIdNotExists);
+    const state = useUserStateStore(state => state.state)
 
     useEffect(() => {
         if (props.user) {
@@ -118,7 +120,7 @@ export default function UserForm(props: UserFormProps) {
     return (
         <>
             <Dialog fullWidth open={open} onClose={onClose}>
-                <form onSubmit={submitHandler}>
+                <form className="center-col" onSubmit={submitHandler}>
                     <p>
                         <TextField
                             name="id"
@@ -161,19 +163,21 @@ export default function UserForm(props: UserFormProps) {
                         />
                     </p>
                     <p>
-                        <TextField
-                            select
-                            name="role"
-                            label="Role"
-                            value={roleValue}
-                        >
-                            <MenuItem value='Student' onClick={() => setRoleValue('Student')}>
-                                Student
-                            </MenuItem>
-                            <MenuItem value='Admin' onClick={() => setRoleValue('Admin')}>
-                                Admin
-                            </MenuItem>
-                        </TextField>
+                        {(state.userRole === 'Admin' || method === 'ADD') &&
+                            <TextField
+                                select
+                                name="role"
+                                label="Role"
+                                value={roleValue}
+                            >
+                                <MenuItem value='Student' onClick={() => setRoleValue('Student')}>
+                                    Student
+                                </MenuItem>
+                                <MenuItem value='Admin' onClick={() => setRoleValue('Admin')}>
+                                    Admin
+                                </MenuItem>
+                            </TextField>
+                        }
                     </p>
 
                     <p>

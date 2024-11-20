@@ -43,6 +43,8 @@ export default function Enrollments() {
 
             <div className="list-container">
 
+                <h1>{state.userRole === "Admin" ? "Enrollments List:" : "Your Enrollments:"}</h1>
+
                 <div className="search-wrapper">
                     <SearchIcon className="search-icon"/>
                     <input
@@ -66,11 +68,11 @@ export default function Enrollments() {
                     }
                 </div>
 
-                <Button variant="contained" onClick={() => setOpenForm(true)}>Add Enrollment</Button>
+                {state.userRole === 'Admin' &&
+                    <Button variant="contained" onClick={() => setOpenForm(true)}>Add Enrollment</Button>
+                }
 
-                <h1>Enrollments List:</h1>
-
-                {isLoading && <CircularProgress />}
+                {isLoading && <div style={{margin: "50px"}}><CircularProgress/></div>}
 
                 {!isLoading &&
                     <List sx={{width: '100%', maxWidth: 360}}>

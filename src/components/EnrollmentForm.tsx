@@ -106,8 +106,8 @@ export default function EnrollmentForm(props: EnrollmentFormProps) {
 
         <>
 
-            <Dialog open={open} onClose={onClose}>
-                <form onSubmit={submitHandler}>
+            <Dialog fullWidth open={open} onClose={onClose}>
+                <form className="center-col" onSubmit={submitHandler}>
                     <p>
                         <TextField
                             name="id"

@@ -38,7 +38,7 @@ export default function MainNavigation() {
             </header>
 
             <div className="logout-btn">
-                <Button variant="contained" onClick={() => navigate('/')}>Log Out</Button>
+                <Button variant="contained" color="secondary" onClick={() => navigate('/')}>Log Out</Button>
             </div>
         </>
 

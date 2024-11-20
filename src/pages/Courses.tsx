@@ -35,6 +35,8 @@ export default function Courses() {
             <CourseModal course={courseSelected} onClose={() => setCourseSelected(null)}/>
             <div className="list-container">
 
+                <h1>Available Courses:</h1>
+
                 <div className="search-wrapper">
                     <SearchIcon className="search-icon"/>
                     <input
@@ -44,11 +46,10 @@ export default function Courses() {
                     />
                 </div>
 
-                {state.userRole === "Admin" && <Button variant="contained" onClick={() => setOpenForm(true)}>Add Course</Button>}
+                {state.userRole === "Admin" &&
+                    <Button variant="contained" onClick={() => setOpenForm(true)}>Add Course</Button>}
 
-                <h1>Courses Table:</h1>
-
-                {isLoading && <CircularProgress />}
+                {isLoading && <div style={{margin: "50px"}}><CircularProgress/></div>}
 
                 {!isLoading &&
                     <List sx={{width: '100%', maxWidth: 360}}>

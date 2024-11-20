@@ -4,6 +4,14 @@ import Course from "../interfaces/Course.ts";
 import Enrollment from "../interfaces/Enrollment.ts";
 import {COURSES, ENROLLMENTS, USERS} from "../consts.ts";
 
+const emptyUser: User = {
+    id: "",
+    name: "",
+    email: "",
+    city: "",
+    role: "Student",
+    registrationDate: new Date()
+}
 
 export interface resultProps {
     succeeded: boolean;
@@ -22,6 +30,7 @@ interface StoreProps {
     addUser: (user: User, emailCheck: (email:string) => resultProps) => resultProps;
     updateUser: (user: User, emailCheck: (email:string) => resultProps) => resultProps;
     deleteUser: (userId: string) => resultProps;
+    getUserById: (id: string) => User;
 
     courses: Course[];
     isCourseIdExists: (id: string) => resultProps;
@@ -120,6 +129,17 @@ const useManagementStore = create<StoreProps>((set) => ({
         })
 
         return {succeeded, message};
+    },
+    getUserById: (id: string) => {
+        let user: User = emptyUser;
+        set(state => {
+            const index = state.users.findIndex((u: User) => u.id === id);
+            if (index >= 0) {
+                user = {...state.users[index]};
+            }
+            return {...state};
+        })
+        return user;
     },
     courses: COURSES,
     isCourseIdExists: (id: string) => {

@@ -6,8 +6,9 @@ import Home from "./pages/Home.tsx";
 import './App.scss';
 import Login from "./pages/Login.tsx";
 import Signup from "./pages/Signup.tsx";
-import Root from "./pages/Root.tsx";
+import SignedRoot from "./pages/SignedRoot.tsx";
 import AlertMessage from "./components/AlertMessage.tsx";
+import Profile from "./pages/Profile.tsx";
 
 const router = createBrowserRouter([{
     path: '/',
@@ -18,7 +19,7 @@ const router = createBrowserRouter([{
     ,
     children: [{
             index: true,
-            element: <Home/>
+            element: <Home />
         },
         {
             path: 'login',
@@ -30,27 +31,28 @@ const router = createBrowserRouter([{
         },
         {
             path: 'signed',
-            element: <Root />,
+            element: <SignedRoot />,
             children: [{
                 index: true,
                 path: 'profile',
-                element: <></>
+                element: <Profile />
                 },
                 {
                     path: 'users',
-                    element: <Users/>,
+                    element: <Users />,
                 },
                 {
                     path: 'courses',
-                    element: <Courses/>
+                    element: <Courses />
                 },
                 {
                     path: 'enrollments',
-                    element: <Enrollments/>
-                }]
-        }]
-    }
-]);
+                    element: <Enrollments />
+                }
+            ]
+        }
+    ]
+}]);
 
 function App() {
 

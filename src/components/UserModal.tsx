@@ -1,9 +1,12 @@
 import User from "../interfaces/User.ts";
-import {Dialog} from "@mui/material";
+import {Button, Dialog} from "@mui/material";
 import UserForm from "./UserForm.tsx";
 import {useState} from "react";
 import useManagementStore from "../store/ManagementStore.ts";
 import useAuthStore from "../store/AuthStore.ts";
+import useUserStateStore from "../store/UserStateStore.ts";
+import useAlertState from "../store/AlertStateStore.ts";
+import {useNavigate} from "react-router-dom";
 
 
 interface UserModalProps {
@@ -18,10 +21,28 @@ export default function UserModal(props: UserModalProps) {
 
     const deleteUser = useManagementStore(state => state.deleteUser);
     const deleteApproval = useAuthStore(state => state.deleteApproval);
+    const state = useUserStateStore(state => state.state);
+    const setAlertState = useAlertState(state => state.setAlertState);
+
+    const navigate = useNavigate();
 
     const {user, onClose} = props;
 
     function deleteHandler() {
+        if (user!.id === state.userId) {
+            setAlertState({
+                succeeded: false,
+                message: "You've deleted your account... we're logging you out",
+                open: true
+            });
+            navigate('/');
+        } else {
+            setAlertState({
+                succeeded: true,
+                message: "User deleted Successfully!",
+                open: true
+            });
+        }
         deleteUser(user!.id);
         deleteApproval(user!.email);
         onClose();
@@ -47,34 +68,34 @@ export default function UserModal(props: UserModalProps) {
 
             <Dialog fullWidth open={user !== null && !openForm} onClose={closeHandler}>
                 { user && (
-                    <>
-                        <h2> {user.name} </h2>
+                    <div className="center-col">
+                        <h2>{user.name} </h2>
 
-                        <div>
-                            <p>{user.id}</p>
-                            <p>{user.email}</p>
-                            <p>{user.city}</p>
-                            <p>{user.role}</p>
-                            <p>{user.registrationDate.toLocaleDateString()}</p>
+                        <div className="input-values">
+                            <p>ID: {user.id}</p>
+                            <p>Email: {user.email}</p>
+                            <p>City: {user.city}</p>
+                            <p>Role: {user.role}</p>
+                            <p>Registration Date: {user.registrationDate.toLocaleDateString()}</p>
                         </div>
-                    </>
+                    </div>
                     )
                 }
 
 
                 {!onDelete &&
-                    <div>
-                        <button onClick={() => setOpenForm(true)}>Edit</button>
-                        <button onClick={() => setOnDelete(true)}>Delete</button>
+                    <div className="buttons-wrapper">
+                        <Button variant="contained" color="secondary" onClick={() => setOpenForm(true)}>Edit</Button>
+                        <Button variant="contained" color="primary" onClick={() => setOnDelete(true)}>Delete</Button>
                     </div>
                 }
 
                 {onDelete &&
                     <>
                         <h3>Are you sure?</h3>
-                        <div>
-                            <button onClick={() => setOnDelete(false)}>No</button>
-                            <button onClick={deleteHandler}>Yes</button>
+                        <div className="buttons-wrapper">
+                            <Button variant="contained" color="secondary" onClick={() => setOnDelete(false)}>No</Button>
+                            <Button variant="contained" color="primary" onClick={deleteHandler}>Yes</Button>
                         </div>
                     </>
 

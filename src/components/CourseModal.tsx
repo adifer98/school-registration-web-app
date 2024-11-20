@@ -1,5 +1,5 @@
 import Course from "../interfaces/Course.ts";
-import {Dialog} from "@mui/material";
+import {Button, Dialog} from "@mui/material";
 import {useState} from "react";
 import CourseForm from "./CourseForm.tsx";
 import useManagementStore from "../store/ManagementStore.ts";
@@ -44,33 +44,33 @@ export default function CourseModal(props: CoursePresenterProps) {
                 }}
             />
 
-            <Dialog open={course !== null} onClose={closeHandler}>
+            <Dialog fullWidth open={course !== null && !openForm} onClose={closeHandler}>
                 {course &&
-                    <>
-                        <h2> {course.title}</h2>
+                    <div className="center-col">
+                        <h2>{course.title}</h2>
 
-                        <div>
-                            <p>{course.id}</p>
-                            <p>{course.description}</p>
-                            <p>{course.hours}</p>
-                            <p>{course.price}</p>
+                        <div className="input-values">
+                            <p>ID: {course.id}</p>
+                            <p>Description: {course.description}</p>
+                            <p>Hours: {course.hours}</p>
+                            <p>Price: {course.price}</p>
                         </div>
-                    </>
+                    </div>
                 }
 
                 {state.userRole === "Admin" && !onDelete &&
-                    <div>
-                        <button onClick={() => setOpenForm(true)}>Edit</button>
-                        <button onClick={() => setOnDelete(true)}>Delete</button>
+                    <div className="buttons-wrapper">
+                        <Button variant="contained" color="secondary" onClick={() => setOpenForm(true)}>Edit</Button>
+                        <Button variant="contained" color="primary" onClick={() => setOnDelete(true)}>Delete</Button>
                     </div>
                 }
 
                 {state.userRole === "Admin" && onDelete &&
                     <>
                         <h3>Are you sure?</h3>
-                        <div>
-                            <button onClick={() => setOnDelete(false)}>No</button>
-                            <button onClick={deleteHandler}>Yes</button>
+                        <div className="buttons-wrapper">
+                            <Button variant="contained" color="secondary" onClick={() => setOnDelete(false)}>No</Button>
+                            <Button variant="contained" color="primary" onClick={deleteHandler}>Yes</Button>
                         </div>
                     </>
                 }

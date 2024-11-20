@@ -115,9 +115,9 @@ export default function CourseForm(props: CourseFormProps) {
 
         <>
 
-            <Dialog open={open} onClose={onClose}>
+            <Dialog fullWidth open={open} onClose={onClose}>
 
-                <form onSubmit={submitHandler}>
+                <form className="center-col" onSubmit={submitHandler}>
                     <p>
                         <TextField
                             name="id"

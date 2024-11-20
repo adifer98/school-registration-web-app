@@ -45,7 +45,7 @@ export default function Users() {
                     Add User
                 </Button>
 
-                {isLoading && <div style={{margin: "50px"}}><CircularProgress /></div>}
+                {isLoading && <div style={{margin: "50px"}}><CircularProgress/></div>}
 
                 {!isLoading &&
                     <List sx={{width: "100%", maxWidth: 360}}>

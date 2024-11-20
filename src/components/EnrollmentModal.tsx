@@ -1,5 +1,5 @@
 import Enrollment from "../interfaces/Enrollment.ts";
-import {Dialog} from "@mui/material";
+import {Button, Dialog} from "@mui/material";
 import {useState} from "react";
 import useManagementStore from "../store/ManagementStore.ts";
 
@@ -30,31 +30,30 @@ export default function EnrollmentModal(props: EnrollmentPresenterProps) {
 
     return (
         <>
-            <Dialog open={enrollment !== null} onClose={closeHandler}>
-                { enrollment &&
-                    <>
-                        <h2> {enrollment.id}</h2>
-
-                        <div>
-                            <p>{enrollment.userId}</p>
-                            <p>{enrollment.courseId}</p>
-                            <p>{enrollment.createdDate.toLocaleDateString()}</p>
+            <Dialog fullWidth open={enrollment !== null} onClose={closeHandler}>
+                {enrollment &&
+                    <div className="center-col">
+                        <div className="input-values">
+                            <p>Enrollment ID: {enrollment.id}</p>
+                            <p>User ID: {enrollment.userId}</p>
+                            <p>Course ID: {enrollment.courseId}</p>
+                            <p>Created Date: {enrollment.createdDate.toLocaleDateString()}</p>
                         </div>
-                    </>
+                    </div>
                 }
 
                 {!onDelete &&
-                    <div>
-                        <button onClick={() => setOnDelete(true)}>Delete</button>
+                    <div className="buttons-wrapper">
+                        <Button variant="contained" color="primary" onClick={() => setOnDelete(true)}>Delete</Button>
                     </div>
                 }
 
                 {onDelete &&
                     <>
                         <h3>Are you sure?</h3>
-                        <div>
-                            <button onClick={() => setOnDelete(false)}>No</button>
-                            <button onClick={deleteHandler}>Yes</button>
+                        <div className="buttons-wrapper">
+                            <Button variant="contained" color="secondary" onClick={() => setOnDelete(false)}>No</Button>
+                            <Button variant="contained" color="primary" onClick={deleteHandler}>Yes</Button>
                         </div>
                     </>
                 }
