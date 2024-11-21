@@ -10,7 +10,8 @@ const emptyUser: User = {
     email: "",
     city: "",
     role: "Student",
-    registrationDate: new Date()
+    registrationDate: new Date(),
+    password: ""
 }
 
 export interface resultProps {

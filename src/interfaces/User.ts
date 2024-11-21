@@ -5,6 +5,7 @@ interface User {
     city: string;
     registrationDate: Date;
     role: 'Admin' | 'Student';
+    password: string;
 }
 
 export default User;
