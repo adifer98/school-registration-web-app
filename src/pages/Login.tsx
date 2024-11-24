@@ -1,10 +1,9 @@
 import {Button, TextField} from "@mui/material";
 import {NavLink, useNavigate} from "react-router-dom";
 import {FormEvent, useEffect, useState} from "react";
-import useAuthStore from "../store/AuthStore.ts";
 import useAlertState from "../store/AlertStateStore.ts";
-import useManagementStore, {resultProps} from "../store/ManagementStore.ts";
 import useUserStateStore from "../store/UserStateStore.ts";
+import useUsersStore, {resultProps} from "../store/UsersStore.ts";
 
 
 interface TextFieldsErrorProps {
@@ -38,39 +37,40 @@ export default function Login() {
         });
     }, []);
 
-    const checkApproval = useAuthStore(state => state.checkApproval);
     const setAlertState = useAlertState(state => state.setAlertState);
     const setState = useUserStateStore(state => state.setState);
-    const getStateByEmail = useManagementStore(state => state.getStateByEmail);
-    const approvals = useAuthStore(state => state.userApprovals)
-    const isEmailExists = useAuthStore(state => state.isEmailExists)
-    const isPasswordCorrect = useAuthStore(state => state.isPasswordCorrect)
+    const getStateByEmail = useUsersStore(state => state.getStateByEmail);
+    const isEmailExists = useUsersStore(state => state.isEmailExists);
+    const isPasswordCorrect = useUsersStore(state => state.isPasswordCorrect);
 
     const navigate = useNavigate();
 
-    function checkErrors(email: string, password: string) {
+    function checkInputs(email: string, password: string) : resultProps {
         const emailCheckResult = isEmailExists(email);
         const passwordCheckResult = isPasswordCorrect(email, password);
+
+        if (emailCheckResult.succeeded && passwordCheckResult.succeeded) {
+            return {succeeded: true, message: "Logged in successfully!"};
+        }
+
         setTextFieldsError({
             email: emailCheckResult,
             password: passwordCheckResult
         });
+        return {succeeded: false, message: "Could not log in"};
     }
 
     function loginHandler(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        console.log(approvals)
         const formData = new FormData(event.currentTarget);
         const data = {...Object.fromEntries(formData.entries())} as {email: string; password: string};
         console.log(data);
-        const state = checkApproval(data);
+        const state = checkInputs(data.email, data.password);
         setAlertState({...state, open: true});
         if (state.succeeded) {
             const state = getStateByEmail(data.email);
             setState(state);
             navigate('/signed/profile');
-        } else {
-            checkErrors(data.email, data.password);
         }
     }
 

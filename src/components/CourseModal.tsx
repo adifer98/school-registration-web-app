@@ -2,8 +2,9 @@ import Course from "../interfaces/Course.ts";
 import {Button, Dialog} from "@mui/material";
 import {useState} from "react";
 import CourseForm from "./CourseForm.tsx";
-import useManagementStore from "../store/ManagementStore.ts";
 import useUserStateStore from "../store/UserStateStore.ts";
+import useCoursesStore from "../store/CoursesStore.ts";
+import useEnrollmentsStore from "../store/EnrollmentsStore.ts";
 
 
 interface CoursePresenterProps {
@@ -16,13 +17,15 @@ export default function CourseModal(props: CoursePresenterProps) {
     const [openForm, setOpenForm] = useState<boolean>(false);
     const [onDelete, setOnDelete] = useState<boolean>(false);
 
-    const deleteCourse = useManagementStore(state => state.deleteCourse);
+    const deleteCourse = useCoursesStore(state => state.deleteCourse);
     const state = useUserStateStore(state => state.state);
+    const deleteEnrollmentsByCourseId = useEnrollmentsStore(state => state.deleteEnrollmentsByCourseId);
 
     const {course, onClose} = props;
 
     function deleteHandler() {
         deleteCourse(course!.id);
+        deleteEnrollmentsByCourseId(course!.id);
         onClose();
         setOnDelete(false);
     }
@@ -67,7 +70,7 @@ export default function CourseModal(props: CoursePresenterProps) {
 
                 {state.userRole === "Admin" && onDelete &&
                     <>
-                        <h3>Are you sure?</h3>
+                        <h3 style={{margin: "0 1rem"}}>Are you sure?</h3>
                         <div className="buttons-wrapper">
                             <Button variant="contained" color="secondary" onClick={() => setOnDelete(false)}>No</Button>
                             <Button variant="contained" color="primary" onClick={deleteHandler}>Yes</Button>

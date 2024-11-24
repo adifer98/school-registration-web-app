@@ -1,7 +1,6 @@
 import User from "./interfaces/User.ts";
 import Course from "./interfaces/Course.ts";
 import enrollment from "./interfaces/Enrollment.ts";
-import {ApprovalProps} from "./store/AuthStore.ts";
 
 export const USERS: User[] = [
     {
@@ -10,7 +9,8 @@ export const USERS: User[] = [
         email: "adif@one1.co.il",
         city: "Herzliya",
         role: "Student",
-        registrationDate: new Date()
+        registrationDate: new Date(),
+        password: "adi1"
     },
     {
         id: "2",
@@ -18,7 +18,8 @@ export const USERS: User[] = [
         email: "yair@one1.co.il",
         city: "Herzliya",
         role: "Student",
-        registrationDate: new Date()
+        registrationDate: new Date(),
+        password: "yair2",
     },
     {
         id: "3",
@@ -26,15 +27,17 @@ export const USERS: User[] = [
         email: "shiran@one1.co.il",
         city: "Rishon LeZion",
         role: "Admin",
-        registrationDate: new Date()
+        registrationDate: new Date(),
+        password: "shiran3",
     },
     {
         id: "4",
         name: "Avigail",
-        email: "Avigail@one1.co.il",
+        email: "avigail@one1.co.il",
         city: "Petach Tikva",
         role: "Admin",
-        registrationDate: new Date()
+        registrationDate: new Date(),
+        password: "avigail4",
     },
     {
         id: "5",
@@ -42,7 +45,8 @@ export const USERS: User[] = [
         email: "shlomi@one1.co.il",
         city: "Tel Aviv",
         role: "Student",
-        registrationDate: new Date()
+        registrationDate: new Date(),
+        password: "shlomi5",
     },
 ];
 
@@ -110,20 +114,3 @@ export const ENROLLMENTS: enrollment[] = [
         createdDate: new Date()
     }
 ]
-
-export const APPROVALS : ApprovalProps[] = [{
-    email: "adif@one1.co.il",
-    password: "adi1"
-},{
-    email: "yairf@one1.co.il",
-    password: "yair2",
-},{
-    email: "shiran@one1.co.il",
-    password: "shiran3",
-},{
-    email: "Avigail@one1.co.il",
-    password: "Avigail4",
-},{
-    email: "shlomi@one1.co.il",
-    password: "shlomi5",
-}]

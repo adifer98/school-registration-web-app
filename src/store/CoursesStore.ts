@@ -1,12 +1,9 @@
 import {create} from "zustand";
 import Course from "../interfaces/Course.ts";
 import {COURSES} from "../consts.ts";
+import {resultProps} from "./UsersStore.ts";
 
 
-export interface resultProps {
-    succeeded: boolean;
-    message: string;
-}
 
 
 interface StoreProps {

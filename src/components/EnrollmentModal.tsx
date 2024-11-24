@@ -1,7 +1,7 @@
 import Enrollment from "../interfaces/Enrollment.ts";
 import {Button, Dialog} from "@mui/material";
 import {useState} from "react";
-import useManagementStore from "../store/ManagementStore.ts";
+import useEnrollmentsStore from "../store/EnrollmentsStore.ts";
 
 
 interface EnrollmentPresenterProps {
@@ -13,7 +13,7 @@ export default function EnrollmentModal(props: EnrollmentPresenterProps) {
 
     const [onDelete, setOnDelete] = useState<boolean>(false);
 
-    const deleteEnrollment = useManagementStore(state => state.deleteEnrollment);
+    const deleteEnrollment = useEnrollmentsStore(state => state.deleteEnrollmentById);
 
     const {enrollment, onClose} = props;
 
@@ -50,7 +50,7 @@ export default function EnrollmentModal(props: EnrollmentPresenterProps) {
 
                 {onDelete &&
                     <>
-                        <h3>Are you sure?</h3>
+                        <h3 style={{margin: "0 1rem"}}>Are you sure?</h3>
                         <div className="buttons-wrapper">
                             <Button variant="contained" color="secondary" onClick={() => setOnDelete(false)}>No</Button>
                             <Button variant="contained" color="primary" onClick={deleteHandler}>Yes</Button>

@@ -1,11 +1,11 @@
 import EnrollmentForm from "../components/EnrollmentForm.tsx";
 import EnrollmentModal from "../components/EnrollmentModal.tsx";
-import useManagementStore from "../store/ManagementStore.ts";
 import {useEffect, useState} from "react";
 import Enrollment from "../interfaces/Enrollment.ts";
 import {Button, CircularProgress, List, ListItem, ListItemText, MenuItem, TextField} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import useUserStateStore from "../store/UserStateStore.ts";
+import useEnrollmentsStore from "../store/EnrollmentsStore.ts";
 
 export default function Enrollments() {
 
@@ -14,7 +14,7 @@ export default function Enrollments() {
     const [searchInput, setSearchInput] = useState("");
     const [filteredValue, setFilteredValue] = useState<'Student' | 'Course'>('Student');
 
-    const enrollments = useManagementStore(state => state.enrollments);
+    const enrollments = useEnrollmentsStore(state => state.enrollments);
     const state = useUserStateStore(state => state.state);
 
     const [isLoading, setIsLoading] = useState<boolean>(true);

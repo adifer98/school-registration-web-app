@@ -1,4 +1,4 @@
-import {createBrowserRouter, Outlet, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import Users from "./pages/Users.tsx";
 import Courses from "./pages/Courses.tsx";
 import Enrollments from "./pages/Enrollments.tsx";
@@ -7,16 +7,14 @@ import './App.scss';
 import Login from "./pages/Login.tsx";
 import Signup from "./pages/Signup.tsx";
 import SignedRoot from "./pages/SignedRoot.tsx";
-import AlertMessage from "./components/AlertMessage.tsx";
 import Profile from "./pages/Profile.tsx";
+import MainRoot from "./pages/MainRoot.tsx";
+
+
 
 const router = createBrowserRouter([{
     path: '/',
-    element: <>
-        <Outlet/>
-        <AlertMessage />
-    </>
-    ,
+    element: <MainRoot />,
     children: [{
             index: true,
             element: <Home />
@@ -53,6 +51,7 @@ const router = createBrowserRouter([{
         }
     ]
 }]);
+
 
 function App() {
 

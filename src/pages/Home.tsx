@@ -10,7 +10,7 @@ export default function Home() {
         <div className="home">
 
             <header className="home-header">
-                <img src={LOGO} />
+                <img src={LOGO} alt="nice-logo"/>
                 <div className="actions">
                     <Button variant="contained" color="primary" onClick={() => navigate('/login')}>Login</Button>
                     <Button variant="contained" color="secondary" onClick={() => navigate('/signup')}>Sign up</Button>

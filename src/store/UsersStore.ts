@@ -26,8 +26,11 @@ interface StoreProps {
     users: User[];
     isUserIdNotExists: (id: string) => resultProps;
     isUserIdExists: (id: string) => resultProps;
-    addUser: (user: User, emailCheck: (email:string) => resultProps) => resultProps;
-    updateUser: (user: User, emailCheck: (email:string) => resultProps) => resultProps;
+    isEmailExists: (email: string) => resultProps;
+    isEmailNotExists: (email: string) => resultProps;
+    isPasswordCorrect: (email: string, password: string) => resultProps;
+    addUser: (user: User) => resultProps;
+    updateUser: (user: User) => resultProps;
     deleteUser: (userId: string) => resultProps;
     getUserById: (id: string) => User;
     getStateByEmail: (email: string) => stateProps;
@@ -64,7 +67,49 @@ const useUsersStore = create<StoreProps>((set) => ({
         });
         return {succeeded, message};
     },
-    addUser: (user: User, emailCheck) => {
+    isEmailNotExists: (email: string) => {
+        let message = "";
+        let succeeded = false;
+        set(state => {
+            const index = state.users.findIndex((user) => user.email === email);
+            if (index >= 0) {
+                message = "That email belongs to a different account"
+                return {...state};
+            }
+            succeeded = true;
+            return {...state};
+        })
+        return {succeeded, message};
+    },
+    isEmailExists: (email: string) => {
+        let message = "";
+        let succeeded = false;
+        set(state => {
+            const index = state.users.findIndex((user) => user.email === email);
+            if (index < 0) {
+                message = "There's no account with this email";
+                return {...state};
+            }
+            succeeded = true;
+            return {...state};
+        })
+        return {succeeded, message};
+    },
+    isPasswordCorrect: (email: string, password: string) => {
+        let message : string = "";
+        let succeeded = false;
+        set(state => {
+            const index = state.users.findIndex((user) => user.email === email);
+            if (index >= 0 && state.users[index].password !== password) {
+                message = "Incorrect password"
+                return {...state};
+            }
+            succeeded = true;
+            return {...state};
+        })
+        return {succeeded, message};
+    },
+    addUser: (user: User) => {
         let message : string = "Could not add new user";
         let succeeded : boolean = false;
         set((state: StoreProps): StoreProps => {
@@ -72,7 +117,7 @@ const useUsersStore = create<StoreProps>((set) => ({
             if (index >= 0) {
                 return {...state};
             }
-            if (!emailCheck(user.email).succeeded) {
+            if (state.users.filter(u => u.email === user.email).length > 0) {
                 return {...state};
             }
             message = 'User added successfully!';
@@ -81,13 +126,15 @@ const useUsersStore = create<StoreProps>((set) => ({
         });
         return {succeeded, message};
     },
-    updateUser: (user: User, emailCheck: (email:string) => resultProps) => {
+    updateUser: (user: User) => {
         let message : string = "Could not update user";
         let succeeded : boolean = false;
         set((state: StoreProps): StoreProps => {
             const index = state.users.findIndex((u: User) => u.id === user.id);
-            if (!emailCheck(user.email).succeeded) {
-                return {...state};
+            if (state.users[index].email !== user.email) {
+                if (state.users.filter((u: User) => u.email === user.email).length === 1) {
+                    return {...state};
+                }
             }
             state.users[index] = user;
             message = 'User updated successfully!';

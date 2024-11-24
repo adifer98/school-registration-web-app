@@ -2,14 +2,16 @@ import Enrollment from "../interfaces/Enrollment.ts";
 import React, {useEffect, useState} from "react";
 import dayjs, {Dayjs} from "dayjs";
 import {format} from "date-fns";
-import useManagementStore, {resultProps} from "../store/ManagementStore.ts";
-import {Button, Dialog, TextField} from "@mui/material";
+import {Autocomplete, Button, Dialog, TextField} from "@mui/material";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DemoContainer} from "@mui/x-date-pickers/internals/demo";
 import {DatePicker} from "@mui/x-date-pickers";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import useAlertState from "../store/AlertStateStore.ts";
 import useUserStateStore from "../store/UserStateStore.ts";
+import useEnrollmentsStore from "../store/EnrollmentsStore.ts";
+import useCoursesStore from "../store/CoursesStore.ts";
+import useUsersStore, {resultProps} from "../store/UsersStore.ts";
 
 interface TextFieldsErrorProps {
     id: resultProps;
@@ -43,11 +45,13 @@ export default function EnrollmentForm(props: EnrollmentFormProps) {
 
     const setAlertState = useAlertState(state => state.setAlertState);
 
-    const addEnrollment = useManagementStore(state => state.addEnrollment);
+    const addEnrollment = useEnrollmentsStore(state => state.addEnrollment);
     const state = useUserStateStore(state => state.state);
-    const isEnrollmentIdNotExists = useManagementStore(state => state.isEnrollmentIdNotExists);
-    const isCourseIdExists = useManagementStore(state => state.isCourseIdExists);
-    const isUserIdExists = useManagementStore(state => state.isUserIdExists);
+    const isEnrollmentIdNotExists = useEnrollmentsStore(state => state.isEnrollmentIdNotExists);
+    const isCourseIdExists = useCoursesStore(state => state.isCourseIdExists);
+    const isUserIdExists = useUsersStore(state => state.isUserIdExists);
+    const users = useUsersStore(state => state.users);
+    const courses = useCoursesStore(state => state.courses);
 
     useEffect(() => {
         setTextFieldsError({
@@ -69,16 +73,22 @@ export default function EnrollmentForm(props: EnrollmentFormProps) {
 
     const {open, onClose} = props;
 
-    function checkErrors(id: string, userId: string, courseId: string) {
+
+    function checkInputs(id: string, userId: string, courseId: string) : boolean {
         const idCheckResult = isEnrollmentIdNotExists(id);
         const userIdCheckResult = isUserIdExists(userId);
         const courseIdCheckResult = isCourseIdExists(courseId);
 
+        if (courseIdCheckResult.succeeded && idCheckResult.succeeded && userIdCheckResult.succeeded) {
+            return true;
+        }
         setTextFieldsError({
             id: idCheckResult,
             userId: userIdCheckResult,
             courseId: courseIdCheckResult
         })
+
+        return false;
     }
 
     function submitHandler(event: React.FormEvent<HTMLFormElement>) {
@@ -90,17 +100,19 @@ export default function EnrollmentForm(props: EnrollmentFormProps) {
             data.userId = state.userId;
         }
         console.log(data);
-        const operationState = addEnrollment(data);
-        setAlertState({...operationState, open: true});
 
-        if (operationState.succeeded) {
+        if (checkInputs(data.id, data.userId, data.courseId)) {
+            addEnrollment(data);
+            setAlertState({open: true, succeeded: true, message: "Enrollment added successfully!"});
             onClose();
         } else {
-            checkErrors(data.id, data.userId, data.courseId);
+            setAlertState({open: true, succeeded: false, message: "Could not add enrollment"});
         }
 
     }
 
+    const userIdOptions = users.map(user => user.id);
+    const courseIdOptions = courses.map(course => course.id);
 
     return (
 
@@ -108,49 +120,56 @@ export default function EnrollmentForm(props: EnrollmentFormProps) {
 
             <Dialog fullWidth open={open} onClose={onClose}>
                 <form className="center-col" onSubmit={submitHandler}>
-                    <p>
-                        <TextField
-                            name="id"
-                            label="Enrollment ID"
-                            variant="outlined"
-                            required
-                            error={!textFieldsError.id.succeeded}
-                            helperText={textFieldsError.id.message}
-                        />
-                    </p>
-                    <p>
-                        <TextField
+
+                    <TextField
+                        name="id"
+                        label="Enrollment ID"
+                        variant="outlined"
+                        required
+                        error={!textFieldsError.id.succeeded}
+                        helperText={textFieldsError.id.message}
+                    />
+
+                    <Autocomplete
+                        disablePortal
+                        options={userIdOptions}
+                        sx={{ width: 300 }}
+                        renderInput={(params) => <TextField
+                            {...params}
                             name="userId"
                             label="User ID"
                             variant="outlined"
                             required
-                            defaultValue={state.userRole === "Student" ? state.userId : ""}
-                            disabled={state.userRole === "Student"}
                             error={!textFieldsError.userId.succeeded}
                             helperText={textFieldsError.userId.message}
-                        />
-                    </p>
-                    <p>
-                        <TextField
+                        />}
+                    />
+
+                    <Autocomplete
+                        disablePortal
+                        options={courseIdOptions}
+                        sx={{ width: 300 }}
+                        renderInput={(params) => <TextField
+                            {...params}
                             name="courseId"
                             label="Course ID"
                             variant="outlined"
                             required
                             error={!textFieldsError.courseId.succeeded}
                             helperText={textFieldsError.courseId.message}
-                        />
-                    </p>
-                    <p>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DemoContainer components={['DatePicker']}>
-                                <DatePicker
-                                    label="Created Date"
-                                    value={value}
-                                    onChange={(newDate) => newDate && setValue(newDate)}
-                                />
-                            </DemoContainer>
-                        </LocalizationProvider>
-                    </p>
+                        />}
+                    />
+
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DemoContainer components={['DatePicker']}>
+                            <DatePicker
+                                label="Created Date"
+                                value={value}
+                                onChange={(newDate) => newDate && setValue(newDate)}
+                            />
+                        </DemoContainer>
+                    </LocalizationProvider>
+
                     <div>
                         <Button type="submit" variant="contained">Submit</Button>
                     </div>

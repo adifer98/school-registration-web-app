@@ -1,11 +1,11 @@
 import CourseForm from "../components/CourseForm.tsx";
-import useManagementStore from "../store/ManagementStore.ts";
 import {useEffect, useState} from "react";
 import Course from "../interfaces/Course.ts";
 import CourseModal from "../components/CourseModal.tsx";
 import {Button, CircularProgress, List, ListItem, ListItemText} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import useUserStateStore from "../store/UserStateStore.ts";
+import useCoursesStore from "../store/CoursesStore.ts";
 
 export default function Courses() {
 
@@ -13,7 +13,7 @@ export default function Courses() {
     const [openForm, setOpenForm] = useState<boolean>(false);
     const [searchInput, setSearchInput] = useState("");
 
-    const courses = useManagementStore(state => state.courses);
+    const courses = useCoursesStore(state => state.courses);
     const state = useUserStateStore(state => state.state);
 
     const [isLoading, setIsLoading] = useState<boolean>(true);

@@ -2,11 +2,27 @@ import User from "../interfaces/User.ts";
 import {Button, Dialog} from "@mui/material";
 import UserForm from "./UserForm.tsx";
 import {useState} from "react";
-import useManagementStore from "../store/ManagementStore.ts";
-import useAuthStore from "../store/AuthStore.ts";
 import useUserStateStore from "../store/UserStateStore.ts";
 import useAlertState from "../store/AlertStateStore.ts";
 import {useNavigate} from "react-router-dom";
+import useUsersStore from "../store/UsersStore.ts";
+import useEnrollmentsStore from "../store/EnrollmentsStore.ts";
+
+
+interface userUpdateModalProps {
+    open: boolean;
+    onClose: () => void;
+    user: User | null;
+}
+
+function UserUpdateModal(props: userUpdateModalProps) {
+
+    return (
+        <Dialog open={props.open} onClose={props.onClose}>
+            <UserForm method='UPDATE' onClose={props.onClose} user={props.user} />
+        </Dialog>
+    )
+}
 
 
 interface UserModalProps {
@@ -19,10 +35,10 @@ export default function UserModal(props: UserModalProps) {
     const [openForm, setOpenForm] = useState<boolean>(false);
     const [onDelete, setOnDelete] = useState<boolean>(false);
 
-    const deleteUser = useManagementStore(state => state.deleteUser);
-    const deleteApproval = useAuthStore(state => state.deleteApproval);
+    const deleteUser = useUsersStore(state => state.deleteUser);
     const state = useUserStateStore(state => state.state);
     const setAlertState = useAlertState(state => state.setAlertState);
+    const deleteEnrollmentsByUserId = useEnrollmentsStore(state => state.deleteEnrollmentsByUserId);
 
     const navigate = useNavigate();
 
@@ -44,7 +60,7 @@ export default function UserModal(props: UserModalProps) {
             });
         }
         deleteUser(user!.id);
-        deleteApproval(user!.email);
+        deleteEnrollmentsByUserId(user!.id);
         onClose();
         setOnDelete(false);
     }
@@ -56,8 +72,7 @@ export default function UserModal(props: UserModalProps) {
 
     return (
         <>
-            <UserForm
-                method='UPDATE'
+            <UserUpdateModal
                 user={user}
                 open={openForm}
                 onClose={() => {
@@ -92,13 +107,12 @@ export default function UserModal(props: UserModalProps) {
 
                 {onDelete &&
                     <>
-                        <h3>Are you sure?</h3>
+                        <h3 style={{margin: "0 1rem"}}>Are you sure?</h3>
                         <div className="buttons-wrapper">
                             <Button variant="contained" color="secondary" onClick={() => setOnDelete(false)}>No</Button>
                             <Button variant="contained" color="primary" onClick={deleteHandler}>Yes</Button>
                         </div>
                     </>
-
                 }
             </Dialog>
         </>

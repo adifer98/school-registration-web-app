@@ -1,18 +1,15 @@
 import {create} from "zustand";
 import Enrollment from "../interfaces/Enrollment.ts";
 import {ENROLLMENTS} from "../consts.ts";
+import {resultProps} from "./UsersStore.ts";
 
 
-export interface resultProps {
-    succeeded: boolean;
-    message: string;
-}
 
 
 interface StoreProps {
     enrollments: Enrollment[];
     isEnrollmentIdNotExists: (id: string) => resultProps;
-    addEnrollment: (enrollment: Enrollment) => resultProps;
+    addEnrollment: (enrollment: Enrollment) => void;
     deleteEnrollmentById: (enrollmentId: string) => resultProps;
     deleteEnrollmentsByUserId: (userId: string) => void;
     deleteEnrollmentsByCourseId: (courseId: string) => void;
@@ -36,24 +33,9 @@ const useEnrollmentsStore = create<StoreProps>((set) => ({
         return {succeeded, message};
     },
     addEnrollment: (enrollment: Enrollment) => {
-        let message: string = "Could not add an enrollment";
-        let succeeded: boolean = false;
         set(state => {
-            const enrollmentIndex = state.enrollments.findIndex((e: Enrollment) => e.id === enrollment.id);
-            if (enrollmentIndex >= 0) {
-                return {...state}
-            }
-            // const studentIndex = state.users.findIndex((u: User) => u.id === enrollment.userId);
-            // const courseIndex = state.courses.findIndex((c: Course) => c.id === enrollment.courseId);
-            //
-            // if (studentIndex < 0 || courseIndex < 0) {
-            //     return {...state}
-            // }
-            message = 'Enrollment added successfully!';
-            succeeded = true;
             return {...state, enrollments: [...state.enrollments, enrollment]};
         })
-        return {succeeded, message};
     },
     deleteEnrollmentById: (enrollmentId : string) => {
         let message: string = "Could not delete enrollment";

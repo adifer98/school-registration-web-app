@@ -1,8 +1,9 @@
 import Course from "../interfaces/Course.ts";
 import {Button, Dialog, TextField} from "@mui/material";
 import React, {useEffect, useState} from "react";
-import useManagementStore, {resultProps} from "../store/ManagementStore.ts";
 import useAlertState from "../store/AlertStateStore.ts";
+import useCoursesStore from "../store/CoursesStore.ts";
+import {resultProps} from "../store/UsersStore.ts";
 
 
 interface TextFieldsErrorProps {
@@ -36,11 +37,11 @@ export default function CourseForm(props: CourseFormProps) {
     })
 
     const setAlertState = useAlertState(state => state.setAlertState);
-    const addCourse = useManagementStore(state => state.addCourse);
-    const updateCourse = useManagementStore(state => state.updateCourse);
-    const isCourseIdNotExists = useManagementStore(state => state.isCourseIdNotExists);
-    const isCourseHoursValid = useManagementStore(state => state.isCourseHoursValid)
-    const isCoursePriceValid = useManagementStore(state => state.isCoursePriceValid)
+    const addCourse = useCoursesStore(state => state.addCourse);
+    const updateCourse = useCoursesStore(state => state.updateCourse);
+    const isCourseIdNotExists = useCoursesStore(state => state.isCourseIdNotExists);
+    const isCourseHoursValid = useCoursesStore(state => state.isCourseHoursValid)
+    const isCoursePriceValid = useCoursesStore(state => state.isCoursePriceValid)
 
     useEffect(() => {
         setTextFieldsError({
@@ -118,7 +119,7 @@ export default function CourseForm(props: CourseFormProps) {
             <Dialog fullWidth open={open} onClose={onClose}>
 
                 <form className="center-col" onSubmit={submitHandler}>
-                    <p>
+
                         <TextField
                             name="id"
                             label="Course ID"
@@ -129,8 +130,7 @@ export default function CourseForm(props: CourseFormProps) {
                             error={course === null && !textFieldsError.id.succeeded}
                             helperText={course === null ? textFieldsError.id.message : ""}
                         />
-                    </p>
-                    <p>
+
                         <TextField
                             name="title"
                             label="Title"
@@ -138,8 +138,7 @@ export default function CourseForm(props: CourseFormProps) {
                             defaultValue={course ? course.title : ""}
                             required
                         />
-                    </p>
-                    <p>
+
                         <TextField
                             name="description"
                             label="Description"
@@ -148,8 +147,7 @@ export default function CourseForm(props: CourseFormProps) {
                             required
                             multiline
                         />
-                    </p>
-                    <p>
+
                         <TextField
                             name="hours"
                             label="Hours"
@@ -159,8 +157,7 @@ export default function CourseForm(props: CourseFormProps) {
                             error={!textFieldsError.hours.succeeded}
                             helperText={textFieldsError.hours.message}
                         />
-                    </p>
-                    <p>
+
                         <TextField
                             name="price"
                             label="Price"
@@ -170,12 +167,9 @@ export default function CourseForm(props: CourseFormProps) {
                             error={!textFieldsError.price.succeeded}
                             helperText={textFieldsError.price.message}
                         />
-                    </p>
 
-                    <p>
-                        <Button type="button" onClick={onClose}>Exit</Button>
                         <Button type="submit" variant="contained">Submit</Button>
-                    </p>
+
                 </form>
             </Dialog>
         </>
