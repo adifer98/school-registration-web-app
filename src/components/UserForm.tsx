@@ -80,13 +80,25 @@ export default function UserForm(props: UserFormProps) {
 
     const {method, user, onClose} = props;
 
+    function isValidEmail(email: string): boolean {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
     function checkErrors(id: string, email: string , checkEmail: boolean,
                          password: string, passwordConfirmation: string) {
         const idCheckResult = isUserIdNotExists(id);
-        const emailCheckResult = checkEmail ? isEmailNotExists(email) : {
+        const emailValidationResult = isValidEmail(email);
+        let emailCheckResult = checkEmail ? isEmailNotExists(email) : {
             succeeded: true,
             message: ""
         };
+        if (!emailValidationResult) {
+            emailCheckResult = {
+                succeeded: false,
+                message: "Email is invalid"
+            };
+        }
         const passwordConfirmCheckResult = password !== passwordConfirmation ? {
             succeeded: false,
             message: "Passwords do not match"
@@ -101,7 +113,10 @@ export default function UserForm(props: UserFormProps) {
             email: emailCheckResult,
             passwordConfirmation: passwordConfirmCheckResult
         })
+
     }
+
+
 
     function submitHandler(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -116,36 +131,40 @@ export default function UserForm(props: UserFormProps) {
         }
         console.log(data);
 
-        if (passwordConfirmationRef.current!.value === data.password) {
-            if (method === "ADD" || method === "SIGNUP") {
-                const state = addUser(data);
-                if (method === "ADD") {
-                    setAlertState({...state, open: true});
-                }
 
-                if (state.succeeded) {
-                    if (method === "SIGNUP") {
-                        setAlertState({succeeded: true, message: "Account created successfully!", open: true});
-                        setState({userId: data.id, userRole: data.role});
-                        navigate('/signed/profile');
-                        return;
-                    }
-                    onClose();
-                } else {
-                    checkErrors(data.id, data.email, true, data.password, passwordConfirmationRef.current!.value);
-                }
-            } else {
-                const state = updateUser(data);
-                setAlertState({...state, open: true});
-                if (state.succeeded) {
-                    onClose();
-                } else {
-                    checkErrors(data.id, data.email, user!.email !== data.email, data.password, passwordConfirmationRef.current!.value);
-                }
-            }
+        const passwordConfirmation = passwordConfirmationRef.current!.value;
+
+        if (!isValidEmail(data.email)) {
+            checkErrors(data.id, data.email, true, data.password, passwordConfirmation);
             return;
         }
-        checkErrors(data.id, data.email, user ? user!.email !== data.email : true, data.password, passwordConfirmationRef.current!.value);
+
+        if (method === "ADD" || method === "SIGNUP") {
+            const state = addUser(data, passwordConfirmation);
+            if (method === "ADD") {
+                setAlertState({...state, open: true});
+            }
+
+            if (state.succeeded) {
+                if (method === "SIGNUP") {
+                    setAlertState({succeeded: true, message: "Account created successfully!", open: true});
+                    setState({userId: data.id, userRole: data.role});
+                    navigate('/signed/profile');
+                    return;
+                }
+                onClose();
+            } else {
+                checkErrors(data.id, data.email, true, data.password, passwordConfirmation);
+            }
+        } else {
+            const state = updateUser(data, passwordConfirmation);
+            setAlertState({...state, open: true});
+            if (state.succeeded) {
+                onClose();
+            } else {
+                checkErrors(data.id, data.email, user!.email !== data.email, data.password, passwordConfirmation);
+            }
+        }
     }
 
 
@@ -183,7 +202,7 @@ export default function UserForm(props: UserFormProps) {
                     name="role"
                     label="Role"
                     value={roleValue}
-                    disabled={!(state.userRole === 'Admin' || method === 'ADD')}
+                    disabled={!(state.userRole === 'Admin' || method !== 'UPDATE')}
                 >
                     <MenuItem value='Student' onClick={() => setRoleValue('Student')}>
                         Student
